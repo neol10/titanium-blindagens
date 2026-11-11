@@ -494,6 +494,7 @@ ul {
   align-items: center;
   overflow: hidden;
   padding-top: var(--header-height);
+  background: #000;
 }
 
 .hero-video-wrapper {
@@ -504,6 +505,7 @@ ul {
   height: 100%;
   z-index: 1;
   overflow: hidden;
+  background: #000;
 }
 
 .hero-video {
@@ -584,19 +586,21 @@ ul {
   font-size: clamp(1.85rem, 8.5vw, 4.5rem);
   font-weight: 800;
   line-height: 1.08;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   margin-bottom: 20px;
   color: var(--text-pure);
-  word-break: normal;
-  overflow-wrap: break-word;
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 
 .headline-line {
   display: block;
+  white-space: nowrap;
 }
 
 .headline-highlight {
   display: block;
+  white-space: nowrap;
   color: var(--accent-gold);
   font-weight: 800;
 }
