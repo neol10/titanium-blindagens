@@ -516,6 +516,18 @@ ul {
   filter: brightness(0.85) contrast(1.05);
 }
 
+@media (max-width: 768px) {
+  .hero-video {
+    object-position: 60% center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-video {
+    object-position: 55% center;
+  }
+}
+
 /* Gradientes Editoriais Cinematográficos */
 .hero-atmosphere-overlay {
   position: absolute;
@@ -549,6 +561,8 @@ ul {
 
 .hero-content {
   max-width: 680px;
+  width: 100%;
+  min-width: 0;
 }
 
 /* Badges Editoriais */
@@ -583,26 +597,33 @@ ul {
 /* Headline Monumental */
 .hero-headline {
   font-family: var(--font-editorial);
-  font-size: clamp(1.85rem, 8.5vw, 4.5rem);
+  font-size: clamp(1.6rem, 7.5vw, 4.5rem);
   font-weight: 800;
   line-height: 1.08;
   letter-spacing: -0.01em;
   margin-bottom: 20px;
   color: var(--text-pure);
-  word-break: keep-all;
-  overflow-wrap: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
 }
 
 .headline-line {
   display: block;
-  white-space: nowrap;
 }
 
 .headline-highlight {
   display: block;
-  white-space: nowrap;
   color: var(--accent-gold);
   font-weight: 800;
+}
+
+@media (max-width: 480px) {
+  .hero-headline {
+    font-size: clamp(1.4rem, 9vw, 2rem);
+    letter-spacing: -0.005em;
+    line-height: 1.1;
+  }
 }
 
 .hero-subtitle {
