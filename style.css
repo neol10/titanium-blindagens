@@ -597,32 +597,81 @@ ul {
 /* Headline Monumental */
 .hero-headline {
   font-family: var(--font-editorial);
-  font-size: clamp(1.6rem, 7.5vw, 4.5rem);
+  font-size: clamp(2.4rem, 5.2vw, 4.4rem);
   font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: -0.01em;
-  margin-bottom: 20px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin-bottom: 24px;
   color: var(--text-pure);
   word-break: normal;
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
   hyphens: none;
 }
 
-.headline-line {
-  display: block;
+.headline-part {
+  display: inline-block;
+  white-space: nowrap;
 }
 
-.headline-highlight {
-  display: block;
+.headline-part.highlight {
   color: var(--accent-gold);
-  font-weight: 800;
 }
 
-@media (max-width: 480px) {
+/* Composição Desktop: 3 linhas
+   Linha 1: PROTEÇÃO QUE
+   Linha 2: ACOMPANHA
+   Linha 3: VOCÊ.
+*/
+.headline-part.line-1 {
+  margin-right: 0.28em;
+}
+
+.headline-part.line-2 {
+  display: inline-block;
+}
+
+.headline-part.line-2::after {
+  content: "";
+  display: block;
+}
+
+.headline-part.line-3 {
+  display: block;
+}
+
+.headline-part.line-4 {
+  display: block;
+}
+
+/* Composição Mobile: 4 linhas organizadas
+   Linha 1: PROTEÇÃO
+   Linha 2: QUE
+   Linha 3: ACOMPANHA
+   Linha 4: VOCÊ.
+*/
+@media (max-width: 640px) {
   .hero-headline {
-    font-size: clamp(1.4rem, 9vw, 2rem);
-    letter-spacing: -0.005em;
-    line-height: 1.1;
+    font-size: clamp(1.85rem, 8.5vw, 2.75rem);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+  }
+
+  .headline-part {
+    display: block !important;
+    white-space: nowrap;
+    margin-right: 0 !important;
+  }
+
+  .headline-part.line-2::after {
+    display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero-headline {
+    font-size: 1.7rem;
+    line-height: 1.08;
   }
 }
 

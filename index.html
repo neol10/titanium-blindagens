@@ -26,6 +26,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
 
+  <!-- Preload do primeiro frame real e do vídeo do hero para carregamento contínuo -->
+  <link rel="preload" as="image" href="/assets/images/hero-poster.webp" type="image/webp" fetchpriority="high">
+  <link rel="preload" as="video" href="/assets/videos/hero.mp4" type="video/mp4" fetchpriority="high">
+
   <link rel="stylesheet" href="/style.css">
 </head>
 <body class="bg-base text-light antialiased">
@@ -119,6 +123,7 @@
           muted 
           loop 
           playsinline 
+          poster="/assets/images/hero-poster.webp"
           preload="auto"
           aria-hidden="true"
         >
@@ -141,8 +146,10 @@
 
           <!-- Título Monumental inspirado na Referência 2 -->
           <h1 class="hero-headline">
-            <span class="headline-line">PROTEÇÃO QUE</span>
-            <span class="headline-highlight">ACOMPANHA VOCÊ.</span>
+            <span class="headline-part line-1">PROTEÇÃO</span>
+            <span class="headline-part line-2">QUE</span>
+            <span class="headline-part line-3 highlight">ACOMPANHA</span>
+            <span class="headline-part line-4 highlight">VOCÊ.</span>
           </h1>
 
           <!-- Subtítulo -->
