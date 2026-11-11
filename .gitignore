@@ -1,0 +1,24 @@
+# Dependências
+node_modules/
+
+# Build de produção (gerado pelo Vite no Vercel)
+dist/
+
+# Scripts temporários de extração de frames
+extract-frames.mjs
+extract-info.mjs
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.production
+
+# Editor
+.vscode/
+.idea/
