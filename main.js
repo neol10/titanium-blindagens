@@ -58,13 +58,42 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ------------------------------------------------------------------------
-  // 4. ACESSIBILIDADE DO VÍDEO DO HERO (PREFERS-REDUCED-MOTION)
+  // 4. AUTOPLAY RESILIENTE & ACESSIBILIDADE DO VÍDEO DO HERO
   // ------------------------------------------------------------------------
   const heroVideo = document.getElementById('hero-bg-video');
   if (heroVideo) {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
       heroVideo.pause();
+    } else {
+      // Garantia programática de autoplay silencioso para Safari/iOS e Chrome Android
+      heroVideo.muted = true;
+      heroVideo.defaultMuted = true;
+      heroVideo.setAttribute('muted', '');
+      heroVideo.setAttribute('playsinline', '');
+      heroVideo.setAttribute('webkit-playsinline', '');
+
+      const tryPlay = () => {
+        const playPromise = heroVideo.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Se bloqueado pelo navegador em modo restrito, aguarda o primeiro toque
+            const unlockOnTouch = () => {
+              heroVideo.play().catch(() => {});
+              window.removeEventListener('touchstart', unlockOnTouch);
+              window.removeEventListener('click', unlockOnTouch);
+            };
+            window.addEventListener('touchstart', unlockOnTouch, { once: true, passive: true });
+            window.addEventListener('click', unlockOnTouch, { once: true, passive: true });
+          });
+        }
+      };
+
+      if (heroVideo.readyState >= 2) {
+        tryPlay();
+      } else {
+        heroVideo.addEventListener('loadeddata', tryPlay, { once: true });
+      }
     }
   }
 
@@ -229,6 +258,23 @@ document.addEventListener('DOMContentLoaded', () => {
     resizeCanvas();
     initFrameLoading();
 
+    // Pré-carregamento dinâmico adaptativo ao redor da posição atual de scroll
+    let preloadDebounce = null;
+    const preloadNearbyFrames = (centerIndex) => {
+      clearTimeout(preloadDebounce);
+      preloadDebounce = setTimeout(() => {
+        // Carrega antecipadamente uma janela de 15 quadros à frente e atrás
+        const radius = 15;
+        const start = Math.max(0, centerIndex - radius);
+        const end = Math.min(TOTAL_FRAMES - 1, centerIndex + radius);
+        for (let i = start; i <= end; i++) {
+          if (!frameLoaded[i]) {
+            loadFrame(i);
+          }
+        }
+      }, 30);
+    };
+
     // ScrollTrigger para o scrub fluído e reversível
     ScrollTrigger.create({
       trigger: engineeringSection,
@@ -242,6 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Mapeamento preciso: 0.0 -> Frame 0 | 1.0 -> Frame 274 (último frame completo)
         const frameIndex = Math.min(TOTAL_FRAMES - 1, Math.floor(progress * TOTAL_FRAMES));
         renderFrame(frameIndex);
+        preloadNearbyFrames(frameIndex);
 
         // Barra de progresso minimalista
         if (engMinimalBar) {
@@ -292,16 +339,12 @@ document.addEventListener('DOMContentLoaded', () => {
       duration: 0.8,
       delay: 0.2
     })
-    .from('.hero-headline .headline-line', {
+    .from('.hero-headline .headline-part', {
       opacity: 0,
-      y: 35,
-      duration: 0.9
+      y: 30,
+      duration: 0.8,
+      stagger: 0.08
     }, '-=0.5')
-    .from('.hero-headline .headline-highlight', {
-      opacity: 0,
-      y: 35,
-      duration: 0.9
-    }, '-=0.6')
     .from('.hero-subtitle', {
       opacity: 0,
       y: 20,
@@ -524,4 +567,9 @@ document.addEventListener('DOMContentLoaded', () => {
       e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
     });
   }
+
+  // Atualização segura do ScrollTrigger após carregamento de fontes e layout
+  window.addEventListener('load', () => {
+    ScrollTrigger.refresh();
+  });
 });

@@ -79,7 +79,6 @@ body {
   background-color: var(--bg-deep);
   color: var(--text-main);
   line-height: 1.6;
-  overflow-x: hidden;
   position: relative;
 }
 
@@ -953,12 +952,14 @@ ul {
 }
 
 .eng-fullscreen-wrapper {
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
   height: 100svh;
+  height: 100dvh;
   overflow: hidden;
   background-color: #050709;
   margin: 0;
@@ -968,6 +969,7 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
+  will-change: transform;
 }
 
 .assembly-canvas {
