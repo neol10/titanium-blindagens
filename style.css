@@ -144,6 +144,12 @@ ul {
   padding: 0 24px;
 }
 
+@media (max-width: 640px) {
+  .container-default {
+    padding: 0 16px;
+  }
+}
+
 /* --------------------------------------------------------------------------
    3. BOTÕES & ELEMENTOS DE AÇÃO (REF 1 + REF 2)
    -------------------------------------------------------------------------- */
@@ -806,7 +812,8 @@ ul {
   letter-spacing: -0.01em;
   margin-bottom: 20px;
   word-break: normal;
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
+  hyphens: none;
 }
 
 .editorial-title-accent {
@@ -1054,14 +1061,16 @@ ul {
 
 .cinema-heading {
   font-family: var(--font-editorial);
-  font-size: clamp(1.4rem, 6.2vw, 3.85rem);
+  font-size: clamp(1.3rem, 5.2vw, 3.85rem);
   font-weight: 800;
   line-height: 1.08;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
   color: var(--text-pure);
   text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95);
   word-break: normal;
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
+  hyphens: none;
+  white-space: nowrap;
 }
 
 .cinema-highlight {
@@ -1111,7 +1120,8 @@ ul {
   margin-top: 14px;
   margin-bottom: 18px;
   word-break: normal;
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
+  hyphens: none;
 }
 
 .text-turquesa {
@@ -1209,11 +1219,14 @@ ul {
 
 .solucao-title {
   font-family: var(--font-editorial);
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 3.5vw, 1.5rem);
   font-weight: 800;
   color: var(--text-pure);
   letter-spacing: -0.01em;
   margin-bottom: 14px;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
 }
 
 .solucao-text {
@@ -1520,12 +1533,25 @@ ul {
   background-color: #07090C;
 }
 
+@media (max-width: 640px) {
+  .section-contato {
+    padding: 40px 0 60px;
+  }
+}
+
 .contato-box-plate {
   background: linear-gradient(135deg, #101519 0%, #0C0F12 100%);
   border: 1px solid var(--border-glass);
   border-radius: clamp(16px, 3.5vw, var(--radius-xl));
   padding: clamp(24px, 4.5vw, 64px) clamp(16px, 4vw, 60px);
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 640px) {
+  .contato-box-plate {
+    padding: 24px 16px;
+    border-radius: var(--radius-lg);
+  }
 }
 
 .contato-grid {
@@ -1551,7 +1577,15 @@ ul {
   margin-top: 14px;
   margin-bottom: 18px;
   word-break: normal;
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+
+@media (max-width: 480px) {
+  .contato-heading {
+    font-size: clamp(1.3rem, 6vw, 1.75rem);
+    line-height: 1.18;
+  }
 }
 
 .contato-subtext {
@@ -1634,6 +1668,13 @@ ul {
   padding: clamp(20px, 3.5vw, 44px) clamp(14px, 3vw, 36px);
 }
 
+@media (max-width: 640px) {
+  .budget-form {
+    padding: 24px 16px;
+    border-radius: var(--radius-md);
+  }
+}
+
 @media (min-width: 600px) {
   .budget-form {
     padding: 44px 36px;
@@ -1642,11 +1683,14 @@ ul {
 
 .form-title {
   font-family: var(--font-editorial);
-  font-size: 1.25rem;
+  font-size: clamp(1.05rem, 3.2vw, 1.25rem);
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   color: var(--text-pure);
   margin-bottom: 6px;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
 }
 
 .form-desc {
