@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ------------------------------------------------------------------------
   const canvas = document.getElementById('assembly-canvas');
   const engineeringSection = document.getElementById('engenharia');
+  const engineeringWrapper = document.getElementById('engineering-wrapper');
   const engMinimalBar = document.getElementById('eng-minimal-bar');
 
   const captionElements = [
@@ -127,8 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ajuste responsivo de dimensões do Canvas com limite de dpr para economia de GPU
     const resizeCanvas = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const w = window.innerWidth;
-      const h = window.innerHeight;
+      const w = engineeringWrapper ? engineeringWrapper.clientWidth : window.innerWidth;
+      const h = engineeringWrapper ? engineeringWrapper.clientHeight : window.innerHeight;
 
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
@@ -173,12 +174,28 @@ document.addEventListener('DOMContentLoaded', () => {
         drawX = 0;
         drawY = Math.round((ch - drawHeight) / 2);
       } else if (canvasAspect < 0.85) {
-        // Mobile vertical (smartphones 320px a 430px)
-        // Enquadramento equilibrado: BMW visível com presença imponente sem corte de carroceria e sem faixa preta excessiva
-        drawWidth = Math.round(cw * 1.35);
-        drawHeight = Math.round(drawWidth / FRAME_ASPECT);
-        drawX = Math.round((cw - drawWidth) / 2);
-        drawY = Math.round((ch - drawHeight) / 2);
+        // Mobile vertical (smartphones 320px a 430px):
+        // Cover real preenchendo 100% da altura sem faixas pretas e sem distorção,
+        // com foco horizontal dinâmico acompanhando o protagonista de cada etapa da montagem
+        drawHeight = ch;
+        drawWidth = Math.round(ch * FRAME_ASPECT);
+        drawY = 0;
+
+        const p = TOTAL_FRAMES > 1 ? index / (TOTAL_FRAMES - 1) : 0;
+        let focalX;
+        if (p <= 0.35) {
+          // Etapa inicial: roda e suspensão centralizadas (0.50 -> 0.45)
+          focalX = 0.50 - (p / 0.35) * 0.05;
+        } else if (p <= 0.70) {
+          // Etapa intermediária: transição para faróis LED, capô e roda dianteira (0.45 -> 0.38)
+          focalX = 0.45 - ((p - 0.35) / 0.35) * 0.07;
+        } else {
+          // Etapa final: grade dupla, faróis e 3/4 dianteiro da BMW X7 (0.38 -> 0.30)
+          focalX = 0.38 - ((p - 0.70) / 0.30) * 0.08;
+        }
+
+        const targetX = Math.round((cw / 2) - (drawWidth * focalX));
+        drawX = Math.min(0, Math.max(cw - drawWidth, targetX));
       } else {
         // Viewport intermediário (tablets / telas quase quadradas)
         drawHeight = ch;
