@@ -256,6 +256,140 @@ ul {
 }
 
 /* --------------------------------------------------------------------------
+   3.5. PRELOADER EDITORIAL CINEMATOGRÁFICO
+   -------------------------------------------------------------------------- */
+html.preloader-active,
+html.preloader-active body {
+  overflow: hidden;
+}
+
+.site-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-deep);
+  opacity: 1;
+  transition: opacity 0.7s cubic-bezier(0.2, 0, 0, 1), visibility 0.7s cubic-bezier(0.2, 0, 0, 1);
+  pointer-events: auto;
+  padding: 24px;
+}
+
+html.preloader-active .site-preloader {
+  display: flex;
+}
+
+.site-preloader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.preloader-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(39, 215, 192, 0.08) 0%, rgba(8, 11, 13, 0) 60%);
+  pointer-events: none;
+}
+
+.preloader-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.preloader-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.preloader-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 20px rgba(39, 215, 192, 0.22));
+}
+
+.preloader-wordmark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.preloader-title {
+  font-family: var(--font-editorial);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  color: var(--text-pure);
+}
+
+.preloader-subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  color: var(--accent-gold);
+}
+
+.preloader-progress-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preloader-track {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.preloader-bar-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--turquesa) 0%, var(--accent-gold) 100%);
+  border-radius: var(--radius-pill);
+  transition: width 0.18s ease-out;
+}
+
+.preloader-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.preloader-status {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+}
+
+.preloader-percent {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-pure);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
    4. HEADER PREMIUM & NAVEGAÇÃO
    -------------------------------------------------------------------------- */
 .site-header {

@@ -31,8 +31,43 @@
   <link rel="preload" as="video" href="/assets/videos/hero.mp4" type="video/mp4" fetchpriority="high">
 
   <link rel="stylesheet" href="/style.css">
+  <script>
+    (function () {
+      try {
+        var cached = window.localStorage.getItem('titanium_blindagens_assets_cached_v1') === 'true';
+        var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!cached && !reduced) {
+          document.documentElement.classList.add('preloader-active');
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body class="bg-base text-light antialiased">
+  <!-- Preloader Editorial Cinematográfico (exibido apenas na 1ª visita sem cache) -->
+  <div id="site-preloader" class="site-preloader" role="status" aria-live="polite" aria-label="Carregando experiência Titanium Blindagens" aria-hidden="true">
+    <div class="preloader-glow" aria-hidden="true"></div>
+    <div class="preloader-inner">
+      <div class="preloader-brand">
+        <img src="/assets/images/logo.png" alt="Logotipo Titanium Blindagens" class="preloader-logo" width="56" height="56">
+        <div class="preloader-wordmark">
+          <span class="preloader-title">TITANIUM</span>
+          <span class="preloader-subtitle">BLINDAGENS</span>
+        </div>
+      </div>
+
+      <div class="preloader-progress-wrap">
+        <div class="preloader-track" aria-hidden="true">
+          <div id="preloader-bar-fill" class="preloader-bar-fill"></div>
+        </div>
+        <div class="preloader-meta">
+          <span class="preloader-status">PREPARANDO EXPERIÊNCIA</span>
+          <span id="preloader-percent" class="preloader-percent">0%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Link de Acessibilidade / Pular para o conteúdo principal -->
   <a href="#conteudo-principal" class="sr-only focus:not-sr-only skip-link">Pular para o conteúdo</a>
 

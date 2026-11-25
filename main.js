@@ -1,9 +1,20 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { initSitePreloader } from './src/components/SitePreloader.js';
+import {
+  TOTAL_SCROLL_FRAMES,
+  scrollFramesCache,
+  loadScrollFrame
+} from './src/lib/preloadAssets.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
 document.addEventListener('DOMContentLoaded', () => {
+  // ------------------------------------------------------------------------
+  // 0. PRELOADER EDITORIAL + CACHE PERSISTENTE (CACHE API)
+  // ------------------------------------------------------------------------
+  initSitePreloader();
+
   // ------------------------------------------------------------------------
   // 1. ANO ATUAL DINÂMICO
   // ------------------------------------------------------------------------
@@ -114,16 +125,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (canvas && engineeringSection) {
     const ctx = canvas.getContext('2d', { alpha: false });
-    const TOTAL_FRAMES = 275;
+    const TOTAL_FRAMES = TOTAL_SCROLL_FRAMES;
     const FRAME_ASPECT = 1600 / 900;
-    const frameImages = new Array(TOTAL_FRAMES);
-    const frameLoaded = new Array(TOTAL_FRAMES).fill(false);
+    const frameImages = scrollFramesCache;
     let currentRenderedIndex = 0;
-
-    const getFrameSrc = (index) => {
-      const num = (index + 1).toString().padStart(4, '0');
-      return `/assets/frames/frame_${num}.webp`;
-    };
 
     // Ajuste responsivo de dimensões do Canvas com limite de dpr para economia de GPU
     const resizeCanvas = () => {
@@ -141,14 +146,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Encontrar o frame carregado mais próximo caso o exato ainda não tenha chegado
     const findNearestLoadedFrame = (targetIndex) => {
-      if (frameLoaded[targetIndex]) return frameImages[targetIndex];
+      if (frameImages[targetIndex]) return frameImages[targetIndex];
 
       // Busca bidirecional pelo vizinho mais próximo já decodificado
       for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
         const left = targetIndex - offset;
         const right = targetIndex + offset;
-        if (left >= 0 && frameLoaded[left]) return frameImages[left];
-        if (right < TOTAL_FRAMES && frameLoaded[right]) return frameImages[right];
+        if (left >= 0 && frameImages[left]) return frameImages[left];
+        if (right < TOTAL_FRAMES && frameImages[right]) return frameImages[right];
       }
       return frameImages[0] || null;
     };
@@ -158,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!ctx || canvas.width === 0 || canvas.height === 0) return;
       currentRenderedIndex = index;
 
-      const img = frameLoaded[index] ? frameImages[index] : findNearestLoadedFrame(index);
+      const img = frameImages[index] || findNearestLoadedFrame(index);
       if (!img || !img.complete) return;
 
       const cw = canvas.width;
@@ -207,66 +212,22 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
     };
 
-    // Carregamento de um frame individual
+    // Carregamento de um frame individual via cache compartilhado (Cache API + GPU decode)
     const loadFrame = (index) => {
       if (frameImages[index]) return Promise.resolve(frameImages[index]);
 
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.src = getFrameSrc(index);
-        img.onload = () => {
-          frameLoaded[index] = true;
-          frameImages[index] = img;
-          if (index === currentRenderedIndex) {
-            renderFrame(index);
-          }
-          resolve(img);
-        };
-        img.onerror = () => {
-          // Fallback gracioso para evitar quebra
-          resolve(null);
-        };
+      return loadScrollFrame(index).then((img) => {
+        if (img && index === currentRenderedIndex) {
+          renderFrame(index);
+        }
+        return img;
       });
     };
 
-    // Carregamento progressivo priorizado
+    // Pintura inicial garantida do primeiro frame assim que decodificado
     const initFrameLoading = async () => {
-      // 1. Carregar primeiro e último frame imediatamente
-      await Promise.all([loadFrame(0), loadFrame(TOTAL_FRAMES - 1)]);
+      await loadFrame(0);
       renderFrame(0);
-
-      // 2. Carregar marcos das etapas (25%, 50%, 75%)
-      const milestones = [
-        Math.round(TOTAL_FRAMES * 0.25),
-        Math.round(TOTAL_FRAMES * 0.50),
-        Math.round(TOTAL_FRAMES * 0.75)
-      ];
-      await Promise.all(milestones.map(idx => loadFrame(idx)));
-
-      // 3. Carregar em lotes concorrentes controlados
-      const BATCH_SIZE = 6;
-      let currentIndex = 1;
-
-      const loadNextBatch = () => {
-        if (currentIndex >= TOTAL_FRAMES) return;
-
-        const batch = [];
-        for (let i = 0; i < BATCH_SIZE && currentIndex < TOTAL_FRAMES; i++, currentIndex++) {
-          if (!frameLoaded[currentIndex]) {
-            batch.push(loadFrame(currentIndex));
-          }
-        }
-
-        Promise.all(batch).then(() => {
-          if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(loadNextBatch);
-          } else {
-            setTimeout(loadNextBatch, 20);
-          }
-        });
-      };
-
-      loadNextBatch();
     };
 
     // Inicializar Canvas e listeners de resize
@@ -285,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const start = Math.max(0, centerIndex - radius);
         const end = Math.min(TOTAL_FRAMES - 1, centerIndex + radius);
         for (let i = start; i <= end; i++) {
-          if (!frameLoaded[i]) {
+          if (!frameImages[i]) {
             loadFrame(i);
           }
         }
